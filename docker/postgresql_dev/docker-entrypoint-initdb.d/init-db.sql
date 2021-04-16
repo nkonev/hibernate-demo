@@ -26,24 +26,24 @@ create table person (
 
 create table application (
     id UUID PRIMARY KEY,
-    name text NOT NULL,
-    main_person_id UUID REFERENCES person(id)
+    name text NOT NULL
 );
 
-create table application_person (
+CREATE TABLE main_person (
     application_id UUID REFERENCES application(id),
-    person_id UUID REFERENCES person(id),
-    PRIMARY KEY (application_id, person_id)
-);
+    UNIQUE (id, application_id)
+) INHERITS (person);
 
-insert into person(id, first_name, second_name) VALUES
-('96dc0f4d-fa2a-4111-bf14-c190d1281ed0', 'Brat', 'Pit'),
-('6136c5f6-f6d6-44ea-917e-278d46250433', 'Arnold', 'Schwartz'),
-('00aabbcc-99d6-40ea-9178-278d46250400', 'Vlad', 'Dr');
+CREATE TABLE secondary_person (
+    application_id UUID REFERENCES application(id)
+) INHERITS (person);
 
-insert into application(id, name, main_person_id) VALUES
-('4120d4f6-f6d6-4444-917e-278d46250433', 'First App', '96dc0f4d-fa2a-4111-bf14-c190d1281ed0');
+insert into application(id, name) VALUES
+('4120d4f6-f6d6-4444-917e-278d46250433', 'First App');
 
-insert into application_person(application_id, person_id) VALUES
-('4120d4f6-f6d6-4444-917e-278d46250433', '6136c5f6-f6d6-44ea-917e-278d46250433'),
-('4120d4f6-f6d6-4444-917e-278d46250433', '00aabbcc-99d6-40ea-9178-278d46250400');
+insert into main_person(id, first_name, second_name, application_id) VALUES
+('96dc0f4d-fa2a-4111-bf14-c190d1281ed0', 'Brat', 'Pit', '4120d4f6-f6d6-4444-917e-278d46250433');
+
+insert into secondary_person(id, first_name, second_name, application_id) VALUES
+('6136c5f6-f6d6-44ea-917e-278d46250433', 'Arnold', 'Schwartz', '4120d4f6-f6d6-4444-917e-278d46250433'),
+('00aabbcc-99d6-40ea-9178-278d46250400', 'Vlad', 'Dr', '4120d4f6-f6d6-4444-917e-278d46250433');

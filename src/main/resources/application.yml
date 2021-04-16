@@ -1,7 +1,6 @@
-spring.jpa.open-in-view: false
-spring.jpa.hibernate.ddl-auto: none
-spring.jpa.properties.hibernate.dialect: com.example.hibernatedemo.hibernatedemo.FixedPostgresDialect
-spring.datasource.url: jdbc:postgresql://localhost:7432/hiber
-spring.datasource.username: hiber
-spring.datasource.password: hiberPazZw0rd
-
+spring.datasource:
+  # https://jdbc.postgresql.org/documentation/head/connect.html#connection-parameters
+  url: jdbc:postgresql://localhost:7432/hiber?connectTimeout=10&socketTimeout=40
+  username: hiber
+  password: "hiberPazZw0rd"
+  driverClassName: org.postgresql.Driver

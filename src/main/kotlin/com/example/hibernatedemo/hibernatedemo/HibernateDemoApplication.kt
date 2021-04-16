@@ -5,17 +5,20 @@ import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.domain.EntityScan
 import org.springframework.boot.runApplication
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories
+import org.springframework.data.annotation.Id
+import org.springframework.data.annotation.Transient
+import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories
+import org.springframework.data.relational.core.mapping.Column
+import org.springframework.data.relational.core.mapping.MappedCollection
+import org.springframework.data.relational.core.mapping.Table
+import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 import java.util.function.Consumer
-import javax.persistence.*
 
 @EntityScan("com.example.hibernatedemo.hibernatedemo")
 @SpringBootApplication
-@EnableJpaRepositories("com.example.hibernatedemo.hibernatedemo")
+@EnableJdbcRepositories("com.example.hibernatedemo.hibernatedemo")
 class HibernateDemoApplication
 
 fun main(args: Array<String>) {
@@ -45,12 +48,11 @@ class Printer(
 	}
 }
 
-interface PersonRepository: JpaRepository<Person, UUID>
+interface PersonRepository: CrudRepository<Person, UUID>
 
-interface ApplicationRepository: JpaRepository<Application, UUID>
+interface ApplicationRepository: CrudRepository<Application, UUID>
 
-@Entity
-@Table(name = "person")
+@Table("person")
 data class Person(
 	@Id
 	val id: UUID,
@@ -58,20 +60,29 @@ data class Person(
 	var secondName: String
 )
 
-@Entity
-@Table(name = "application")
+@Table("main_person")
+data class MainPerson(
+	@Id
+	val id: UUID,
+	var firstName: String,
+	var secondName: String
+)
+
+@Table("secondary_person")
+data class SecondaryPerson(
+	@Id
+	val id: UUID,
+	var firstName: String,
+	var secondName: String
+)
+
+@Table("application")
 data class Application(
 	@Id
 	val id: UUID,
 	var name: String,
-	@OneToOne
-	@JoinColumn(name="main_person_id")
-	var mainPerson: Person,
-	@OneToMany(fetch = FetchType.EAGER) // or @Transactional for lazy
-	@JoinTable(
-			name="application_person",
-			joinColumns = [JoinColumn(name="application_id")],
-			inverseJoinColumns = [JoinColumn(name="person_id")]
-	)
-	var secondaryPersons: Collection<Person>
+	@Column("application_id")
+	var mainPerson: MainPerson,
+	@MappedCollection(idColumn = "application_id", keyColumn = "id")
+	var secondaryPersons: Collection<SecondaryPerson>
 )
