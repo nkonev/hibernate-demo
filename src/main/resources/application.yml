@@ -1,0 +1,7 @@
+spring.jpa.open-in-view: false
+spring.jpa.hibernate.ddl-auto: none
+spring.jpa.properties.hibernate.dialect: com.example.hibernatedemo.hibernatedemo.FixedPostgresDialect
+spring.datasource.url: jdbc:postgresql://localhost:7432/hiber
+spring.datasource.username: hiber
+spring.datasource.password: hiberPazZw0rd
+
