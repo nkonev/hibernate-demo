@@ -29,25 +29,34 @@ class Printer(
 ): CommandLineRunner {
 	private val logger = LoggerFactory.getLogger(this::class.java)
 
-	// @Transactional
+	@Transactional
 	override fun run(vararg args: String?) {
-		logger.info("===== Printing persons =====")
-		personRepository.findAll().forEach(Consumer {
-			logger.info("{}", it)
-		})
-		logger.info("===== End of printing persons =====")
+//		logger.info("===== Printing persons =====")
+//		personRepository.findAll().forEach(Consumer {
+//			logger.info("{}", it)
+//		})
+//		logger.info("===== End of printing persons =====")
+//
+//		logger.info("===== Printing applications =====")
+//		applicationRepository.findAll().forEach(Consumer {
+//			logger.info("{}", it)
+//		})
+//		logger.info("=====End of printing applications =====")
 
-		logger.info("===== Printing applications =====")
-		applicationRepository.findAll().forEach(Consumer {
-			logger.info("{}", it)
-		})
-		logger.info("=====End of printing applications =====")
+		logger.info("===== Printing application projection =====")
+		// Check the database logs. Hibernate won't join application_person and person tables for ApplicationDto
+		applicationRepository.findOneById(UUID.fromString("4120d4f6-f6d6-4444-917e-278d46250433"))?.apply {
+			logger.info("{}", this)
+		}
+		logger.info("===== End of printing application projection =====")
 	}
 }
 
 interface PersonRepository: JpaRepository<Person, UUID>
 
-interface ApplicationRepository: JpaRepository<Application, UUID>
+interface ApplicationRepository: JpaRepository<Application, UUID> {
+	fun findOneById(id: UUID): ApplicationDto?
+}
 
 @Entity
 @Table(name = "person")
@@ -67,11 +76,16 @@ data class Application(
 	@OneToOne
 	@JoinColumn(name="main_person_id")
 	var mainPerson: Person,
-	@OneToMany(fetch = FetchType.EAGER) // or @Transactional for lazy
+	@OneToMany//(fetch = FetchType.EAGER) // or @Transactional for lazy
 	@JoinTable(
 			name="application_person",
 			joinColumns = [JoinColumn(name="application_id")],
 			inverseJoinColumns = [JoinColumn(name="person_id")]
 	)
 	var secondaryPersons: Collection<Person>
+)
+
+data class ApplicationDto(
+		val id: UUID,
+		var name: String
 )
