@@ -6,6 +6,7 @@ plugins {
 	kotlin("jvm") version "1.4.32"
 	kotlin("plugin.spring") version "1.4.32"
 	kotlin("plugin.jpa") version "1.4.32"
+	id ("org.hibernate.orm") version "5.4.28.Final"
 }
 
 group = "com.example.hibernate-demo"
@@ -22,6 +23,15 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("org.postgresql:postgresql:42.2.19")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+}
+
+hibernate {
+	enhance(closureOf<org.hibernate.orm.tooling.gradle.EnhanceExtension> {
+		enableLazyInitialization = true
+		enableDirtyTracking = true
+		enableAssociationManagement = true
+		enableExtendedEnhancement = false
+	})
 }
 
 tasks.withType<KotlinCompile> {

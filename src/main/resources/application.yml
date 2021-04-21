@@ -4,4 +4,7 @@ spring.jpa.properties.hibernate.dialect: com.example.hibernatedemo.hibernatedemo
 spring.datasource.url: jdbc:postgresql://localhost:7432/hiber
 spring.datasource.username: hiber
 spring.datasource.password: hiberPazZw0rd
-
+logging:
+  level:
+    org.hibernate.SQL: trace
+    org.hibernate.type.descriptor.sql.BasicBinder: warn

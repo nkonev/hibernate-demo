@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
-import java.util.function.Consumer
 import javax.persistence.*
 
 @EntityScan("com.example.hibernatedemo.hibernatedemo")
@@ -29,19 +28,34 @@ class Printer(
 ): CommandLineRunner {
 	private val logger = LoggerFactory.getLogger(this::class.java)
 
-	// @Transactional
+	@Transactional
 	override fun run(vararg args: String?) {
-		logger.info("===== Printing persons =====")
-		personRepository.findAll().forEach(Consumer {
-			logger.info("{}", it)
-		})
-		logger.info("===== End of printing persons =====")
+//		logger.info("===== Printing persons =====")
+//		personRepository.findAll().forEach(Consumer {
+//			logger.info("{}", it)
+//		})
+//		logger.info("===== End of printing persons =====")
+//
+//		logger.info("===== Printing applications =====")
+//		applicationRepository.findAll().forEach(Consumer {
+//			logger.info("{}", it)
+//		})
+//		logger.info("=====End of printing applications =====")
 
-		logger.info("===== Printing applications =====")
-		applicationRepository.findAll().forEach(Consumer {
-			logger.info("{}", it)
-		})
-		logger.info("=====End of printing applications =====")
+
+		var m = personRepository.save(Person(UUID.randomUUID(), "first main", "second main"))
+		var s = personRepository.save(Person(UUID.randomUUID(), "first secondary", "second secondary"))
+		var app = Application(id = UUID.randomUUID(), name = "olol", mainPerson = m, secondaryPersons = mutableListOf(s))
+		app = applicationRepository.saveAndFlush(app)
+
+		logger.info("=====End of storing applications =====")
+
+//		logger.info("===== Printing applications =====")
+//		applicationRepository.findAll().forEach(Consumer {
+//			logger.info("{}", it)
+//		})
+//		val findById = applicationRepository.findById(UUID.fromString("4120d4f6-f6d6-4444-917e-278d46250433"))
+//		logger.info("{}", findById.get())
 	}
 }
 
@@ -64,10 +78,10 @@ data class Application(
 	@Id
 	val id: UUID,
 	var name: String,
-	@OneToOne
+	@OneToOne(cascade = [CascadeType.REMOVE], orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumn(name="main_person_id")
 	var mainPerson: Person,
-	@OneToMany(fetch = FetchType.EAGER) // or @Transactional for lazy
+	@OneToMany(cascade = [CascadeType.REMOVE], orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinTable(
 			name="application_person",
 			joinColumns = [JoinColumn(name="application_id")],
