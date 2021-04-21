@@ -13,19 +13,23 @@ ALTER SYSTEM SET log_line_prefix = '%a %u@%d ';
 
 create user hiber with password 'hiberPazZw0rd';
 create database hiber with owner hiber;
+\c hiber
+create extension if not exists "uuid-ossp" schema pg_catalog;
+
+
 \connect hiber hiber;
 
 
 -- poor man's migration
 
 create table person (
-    id UUID PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     first_name text NOT NULL,
     second_name text NOT NULL
 );
 
 create table application (
-    id UUID PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name text NOT NULL,
     main_person_id UUID REFERENCES person(id)
 );

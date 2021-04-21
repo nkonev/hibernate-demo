@@ -43,10 +43,10 @@ class Printer(
 //		logger.info("=====End of printing applications =====")
 
 
-//		var m = personRepository.save(Person(UUID.randomUUID(), "first main", "second main"))
-//		var s = personRepository.save(Person(UUID.randomUUID(), "first secondary", "second secondary"))
-//		var app = Application(id = UUID.randomUUID(), name = "olol", mainPerson = m, secondaryPersons = mutableListOf(s))
-//		app = applicationRepository.saveAndFlush(app)
+		var m = (Person(firstName = "first main", secondName = "second main"))
+		var s = (Person(firstName = "first secondary", secondName = "second secondary"))
+		var app = Application(name = "olol", mainPerson = m, secondaryPersons = mutableListOf(s))
+		app = applicationRepository.saveAndFlush(app)
 //
 //		logger.info("=====End of storing applications =====")
 
@@ -54,11 +54,12 @@ class Printer(
 //		applicationRepository.findAll().forEach(Consumer {
 //			logger.info("{}", it)
 //		})
-		val findById = applicationRepository.findById(UUID.fromString("4120d4f6-f6d6-4444-917e-278d46250433"))
-//		logger.info("app: {}", findById.get())
-		logger.info("app name: {}", findById.get().name)
+//		val findById = applicationRepository.findById(UUID.fromString("4120d4f6-f6d6-4444-917e-278d46250433"))
+////		logger.info("app: {}", findById.get())
+//		logger.info("app name: {}", findById.get().name)
 //		logger.info("main person: {}", findById.get().mainPerson)
 //		logger.info("secondary persons: {}", findById.get().secondaryPersons)
+		//applicationRepository.deleteById(UUID.fromString("dd839788-1415-4cf3-bc63-4abf1f8ec36b"))
 	}
 }
 
@@ -69,8 +70,9 @@ interface ApplicationRepository: JpaRepository<Application, UUID>
 @Entity
 @Table(name = "person")
 data class Person(
+	@GeneratedValue
 	@Id
-	val id: UUID,
+	val id: UUID? = null,
 	var firstName: String,
 	var secondName: String
 )
@@ -78,13 +80,14 @@ data class Person(
 @Entity
 @Table(name = "application")
 data class Application(
+	@GeneratedValue
 	@Id
-	val id: UUID,
+	val id: UUID? = null,
 	var name: String,
-	@OneToOne(cascade = [CascadeType.REMOVE], fetch = FetchType.LAZY)
+	@OneToOne(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
 	@JoinColumn(name="main_person_id")
 	var mainPerson: Person,
-	@OneToMany(cascade = [CascadeType.REMOVE], orphanRemoval = true)
+	@OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true)
 	@JoinTable(
 			name="application_person",
 			joinColumns = [JoinColumn(name="application_id")],
