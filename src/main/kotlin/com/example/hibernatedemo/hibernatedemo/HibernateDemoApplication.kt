@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
+import java.util.function.Consumer
 import javax.persistence.*
 
 @EntityScan("com.example.hibernatedemo.hibernatedemo")
@@ -43,10 +44,10 @@ class Printer(
 //		logger.info("=====End of printing applications =====")
 
 
-		var m = (Person(firstName = "first main", secondName = "second main"))
-		var s = (Person(firstName = "first secondary", secondName = "second secondary"))
-		var app = Application(name = "olol", mainPerson = m, secondaryPersons = mutableListOf(s))
-		app = applicationRepository.saveAndFlush(app)
+//		var m = (Person(firstName = "first main", secondName = "second main"))
+//		var s = (Person(firstName = "first secondary", secondName = "second secondary"))
+//		var app = Application(name = "olol", mainPerson = m, secondaryPersons = mutableListOf(s))
+//		var app2 = applicationRepository.saveAndFlush(app)
 //
 //		logger.info("=====End of storing applications =====")
 
@@ -54,12 +55,17 @@ class Printer(
 //		applicationRepository.findAll().forEach(Consumer {
 //			logger.info("{}", it)
 //		})
-//		val findById = applicationRepository.findById(UUID.fromString("4120d4f6-f6d6-4444-917e-278d46250433"))
+		val findById = applicationRepository.findById(UUID.fromString("4120d4f6-f6d6-4444-917e-278d46250433"))
 ////		logger.info("app: {}", findById.get())
-//		logger.info("app name: {}", findById.get().name)
+		val get = findById.get()
+		logger.info("app name: {}", get.name)
 //		logger.info("main person: {}", findById.get().mainPerson)
 //		logger.info("secondary persons: {}", findById.get().secondaryPersons)
-		//applicationRepository.deleteById(UUID.fromString("dd839788-1415-4cf3-bc63-4abf1f8ec36b"))
+//		applicationRepository.deleteById(UUID.fromString("dd839788-1415-4cf3-bc63-4abf1f8ec36b"))
+		var newPerson = Person(firstName = "first secondary third", secondName = "second secondary third")
+		//newPerson = personRepository.save(newPerson)
+
+		get.secondaryPersons.add(newPerson)
 	}
 }
 
@@ -93,5 +99,5 @@ data class Application(
 			joinColumns = [JoinColumn(name="application_id")],
 			inverseJoinColumns = [JoinColumn(name="person_id")]
 	)
-	var secondaryPersons: Collection<Person>
+	var secondaryPersons: MutableList<Person>
 )
