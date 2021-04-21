@@ -43,19 +43,20 @@ class Printer(
 //		logger.info("=====End of printing applications =====")
 
 
-		var m = personRepository.save(Person(UUID.randomUUID(), "first main", "second main"))
-		var s = personRepository.save(Person(UUID.randomUUID(), "first secondary", "second secondary"))
-		var app = Application(id = UUID.randomUUID(), name = "olol", mainPerson = m, secondaryPersons = mutableListOf(s))
-		app = applicationRepository.saveAndFlush(app)
-
-		logger.info("=====End of storing applications =====")
+//		var m = personRepository.save(Person(UUID.randomUUID(), "first main", "second main"))
+//		var s = personRepository.save(Person(UUID.randomUUID(), "first secondary", "second secondary"))
+//		var app = Application(id = UUID.randomUUID(), name = "olol", mainPerson = m, secondaryPersons = mutableListOf(s))
+//		app = applicationRepository.saveAndFlush(app)
+//
+//		logger.info("=====End of storing applications =====")
 
 //		logger.info("===== Printing applications =====")
 //		applicationRepository.findAll().forEach(Consumer {
 //			logger.info("{}", it)
 //		})
-//		val findById = applicationRepository.findById(UUID.fromString("4120d4f6-f6d6-4444-917e-278d46250433"))
-//		logger.info("{}", findById.get())
+		val findById = applicationRepository.findById(UUID.fromString("4120d4f6-f6d6-4444-917e-278d46250433"))
+		logger.info("app name: {}", findById.get().name)
+		logger.info("main person: {}", findById.get().mainPerson)
 	}
 }
 
