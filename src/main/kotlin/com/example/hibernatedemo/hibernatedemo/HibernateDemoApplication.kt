@@ -55,8 +55,10 @@ class Printer(
 //			logger.info("{}", it)
 //		})
 		val findById = applicationRepository.findById(UUID.fromString("4120d4f6-f6d6-4444-917e-278d46250433"))
+//		logger.info("app: {}", findById.get())
 		logger.info("app name: {}", findById.get().name)
-		logger.info("main person: {}", findById.get().mainPerson)
+//		logger.info("main person: {}", findById.get().mainPerson)
+//		logger.info("secondary persons: {}", findById.get().secondaryPersons)
 	}
 }
 
@@ -79,11 +81,10 @@ data class Application(
 	@Id
 	val id: UUID,
 	var name: String,
-	// OneToOne requires enhancement for FetchType.LAZY https://stackoverflow.com/questions/1444227/how-can-i-make-a-jpa-onetoone-relation-lazy/1445694#1445694
-	@OneToOne(cascade = [CascadeType.REMOVE], orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToOne(cascade = [CascadeType.REMOVE], fetch = FetchType.LAZY)
 	@JoinColumn(name="main_person_id")
 	var mainPerson: Person,
-	@OneToMany(cascade = [CascadeType.REMOVE], orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToMany(cascade = [CascadeType.REMOVE], orphanRemoval = true)
 	@JoinTable(
 			name="application_person",
 			joinColumns = [JoinColumn(name="application_id")],

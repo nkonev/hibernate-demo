@@ -6,7 +6,7 @@ plugins {
 	kotlin("jvm") version "1.4.32"
 	kotlin("plugin.spring") version "1.4.32"
 	kotlin("plugin.jpa") version "1.4.32"
-	id ("org.hibernate.orm") version "5.4.28.Final"
+//	id ("org.hibernate.orm") version "5.4.28.Final"
 }
 
 group = "com.example.hibernate-demo"
@@ -25,14 +25,14 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
-hibernate {
-	enhance(closureOf<org.hibernate.orm.tooling.gradle.EnhanceExtension> {
-		enableLazyInitialization = true
-		enableDirtyTracking = true
-		enableAssociationManagement = true
-		enableExtendedEnhancement = false
-	})
-}
+//hibernate {
+//	enhance(closureOf<org.hibernate.orm.tooling.gradle.EnhanceExtension> {
+//		enableLazyInitialization = true
+//		enableDirtyTracking = true
+//		enableAssociationManagement = true
+//		enableExtendedEnhancement = false
+//	})
+//}
 
 tasks.withType<KotlinCompile> {
 	kotlinOptions {
