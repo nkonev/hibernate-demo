@@ -78,6 +78,7 @@ data class Application(
 	@Id
 	val id: UUID,
 	var name: String,
+	// OneToOne requires enhancement for FetchType.LAZY https://stackoverflow.com/questions/1444227/how-can-i-make-a-jpa-onetoone-relation-lazy/1445694#1445694
 	@OneToOne(cascade = [CascadeType.REMOVE], orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumn(name="main_person_id")
 	var mainPerson: Person,
