@@ -2,8 +2,6 @@ package com.example.hibernatedemo.hibernatedemo
 
 import org.hibernate.annotations.DynamicInsert
 import org.hibernate.annotations.DynamicUpdate
-import org.hibernate.annotations.GeneratorType
-import org.hibernate.annotations.GenericGenerator
 import org.slf4j.LoggerFactory
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -14,7 +12,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
-import java.util.function.Consumer
 import javax.persistence.*
 
 @EntityScan("com.example.hibernatedemo.hibernatedemo")
@@ -87,22 +84,21 @@ interface ApplicationRepository: JpaRepository<Application, UUID>
 @Table(name = "person")
 data class Person(
 	@GeneratedValue(generator = "migration-generator")
-	@GenericGenerator(name = "migration-generator", strategy = "com.example.hibernatedemo.hibernatedemo.MyGenerator")
 	@Id
-	override val id: UUID? = UUID.randomUUID(),
+	val id: UUID? = null,
 	var firstName: String,
-	var secondName: String
-) : WithUuidId
+	var secondName: String,
+	@Transient override var migrationId: UUID? = UUID.randomUUID()
+) : WithProvidedUuidId
 
 @DynamicInsert
 @DynamicUpdate
 @Entity
 @Table(name = "application")
 data class Application(
-	@GeneratedValue(generator = "migration-generator2")
-	@GenericGenerator(name = "migration-generator2", strategy = "com.example.hibernatedemo.hibernatedemo.MyGenerator")
+	@GeneratedValue(generator = "migration-generator")
 	@Id
-	override val id: UUID? = UUID.randomUUID(),
+	val id: UUID? = null,
 	var name: String,
 	@OneToOne(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
 	@JoinColumn(name="main_person_id")
@@ -113,5 +109,6 @@ data class Application(
 			joinColumns = [JoinColumn(name="application_id")],
 			inverseJoinColumns = [JoinColumn(name="person_id")]
 	)
-	var secondaryPersons: MutableList<Person>
-): WithUuidId
+	var secondaryPersons: MutableList<Person>,
+	@Transient override var migrationId: UUID? = UUID.randomUUID()
+): WithProvidedUuidId

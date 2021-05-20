@@ -7,25 +7,32 @@ import org.hibernate.id.Configurable
 import org.hibernate.id.IdentifierGenerator
 import org.hibernate.service.ServiceRegistry
 import org.hibernate.type.Type
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.util.*
 
-interface WithUuidId {
-    val id: UUID?
+interface WithProvidedUuidId {
+    val migrationId: UUID?
 }
 
-class MyGenerator : IdentifierGenerator, Configurable {
-    private var prefix: String? = null
+class MigrationUuidGenerator : IdentifierGenerator, Configurable {
+    private val logger: Logger = LoggerFactory.getLogger(MigrationUuidGenerator::class.java)
 
     @Throws(HibernateException::class)
     override fun generate(session: SharedSessionContractImplementor, obj: Any): Serializable {
-        val withUuidId = obj as WithUuidId
-        return withUuidId.id!!
+        val withUuidId = obj as WithProvidedUuidId
+        if (withUuidId.migrationId != null) {
+            logger.info("Using provided id {}", withUuidId.migrationId)
+            return withUuidId.migrationId!!
+        } else {
+            logger.info("Generated new id")
+            return UUID.randomUUID()
+        }
     }
 
     @Throws(MappingException::class)
     override fun configure(type: Type?, properties: Properties,
                            serviceRegistry: ServiceRegistry?) {
-        prefix = properties.getProperty("prefix")
     }
 }
