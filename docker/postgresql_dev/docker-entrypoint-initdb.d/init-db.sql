@@ -14,10 +14,10 @@ ALTER SYSTEM SET log_line_prefix = '%a %u@%d ';
 create user hiber with password 'hiberPazZw0rd';
 create database hiber with owner hiber;
 \c hiber
+create extension if not exists "uuid-ossp";
 
 
 \connect hiber hiber;
-create extension if not exists "uuid-ossp";
 
 
 -- poor man's migration
