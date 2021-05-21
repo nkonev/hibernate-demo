@@ -64,9 +64,10 @@ class Printer(
 //		logger.info("secondary persons: {}", findById.get().secondaryPersons)
 //		applicationRepository.deleteById(UUID.fromString("dd839788-1415-4cf3-bc63-4abf1f8ec36b"))
 		val get = Application(
-				name = "superApp",
-				mainPerson = Person(firstName = "first", secondName = "second"),
-				secondaryPersons = mutableListOf(Person(firstName = "two secondary third", secondName = "two second secondary third"))
+				migrationId= UUID.fromString("aaef8bd9-10c1-47de-937f-b515d35b1537"),
+				name = "superApp11122",
+				mainPerson = Person(migrationId=UUID.fromString("bbef8bd9-10c1-47de-937f-b515d35b1537"), firstName = "first111222", secondName = "second"),
+				secondaryPersons = mutableListOf(Person(migrationId=UUID.fromString("ccef8bd9-10c1-47de-937f-b515d35b1537"), firstName = "two secondary third111222", secondName = "two second secondary third"))
 		)
 		//newPerson = personRepository.save(newPerson)
 
@@ -88,7 +89,7 @@ data class Person(
 	val id: UUID? = null,
 	var firstName: String,
 	var secondName: String,
-	@Transient override var migrationId: UUID? = UUID.randomUUID()
+	@Transient override var migrationId: UUID? = null
 ) : WithProvidedUuidId
 
 @DynamicInsert
@@ -110,5 +111,5 @@ data class Application(
 			inverseJoinColumns = [JoinColumn(name="person_id")]
 	)
 	var secondaryPersons: MutableList<Person>,
-	@Transient override var migrationId: UUID? = UUID.randomUUID()
+	@Transient override var migrationId: UUID? = null
 ): WithProvidedUuidId
